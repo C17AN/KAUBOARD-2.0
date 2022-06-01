@@ -1,5 +1,6 @@
 /*global chrome */
 import React, { useEffect, useRef, useState } from "react";
+import addLeadingZeros from "../../../utils/helpers/addLeadingZeros";
 // import "./CountDown.scss";
 
 function CountDown() {
@@ -14,7 +15,11 @@ function CountDown() {
   const [isSetterVisible, setIsSetterVisible] = useState(false);
   const timer = useRef(0);
   let interval = 0;
+
   useEffect(() => {
+    /**
+     * 배포 환경 코드 : 크롬의 storage api 사용
+     */
     // chrome.storage.sync.get(["targetDate", "targetType"], function (result) {
     //   let storageDate = result.targetDate;
     //   setTargetDate(result.targetDate);
@@ -28,6 +33,9 @@ function CountDown() {
     //   }, 1000);
     // });
 
+    /**
+     * 로컬 환경 코드 : 브라우저의 localstorage api 사용
+     */
     const targetDate = localStorage.getItem("targetDate");
     const targetType = localStorage.getItem("targetType");
     setTargetDate(targetDate);
@@ -54,6 +62,8 @@ function CountDown() {
   // 디데이 설정 버튼 누르면, 크롬 저장소에 저장하도록
   const onTargetDataSubmit = () => {
     // chrome.storage.sync.set({ targetDate: targetDate, targetType: targetType });
+    localStorage.setItem("targetDate", targetDate ?? "");
+    localStorage.setItem("targetType", targetType ?? "");
     setIsSetterVisible(false);
   };
   const setSetterVisible = () => {
@@ -110,13 +120,6 @@ function CountDown() {
     clearInterval(interval);
   }
 
-  function addLeadingZeros(value: any) {
-    value = String(value);
-    while (value.length < 2) {
-      value = "0" + value;
-    }
-    return value;
-  }
   const countDown = state;
 
   return (
@@ -170,39 +173,39 @@ function CountDown() {
           </button>
         </div>
       </div>
-      <div className="Countdown-timer">
-        <strong style={{ fontSize: "3rem" }}>[</strong>
-        <span className="Countdown-col">
-          <span className="Countdown-col-element">
-            <strong>{addLeadingZeros(countDown.days)}</strong>
-            <span>{"Days"}</span>
+      <section>
+        <div className="bg-slate-50 rounded-md flex justify-center p-4">
+          <span className="Countdown-col">
+            <span className="Countdown-col-element">
+              <strong>{addLeadingZeros(countDown.days)}</strong>
+              <span>{"Days"}</span>
+            </span>
           </span>
-        </span>
-        <span style={{ fontSize: "3rem" }}>/</span>
-        <span className="Countdown-col">
-          <span className="Countdown-col-element">
-            <strong>{addLeadingZeros(countDown.hours)}</strong>
-            <span>{"Hour"}</span>
+          <span style={{ fontSize: "3rem" }}>/</span>
+          <span className="Countdown-col">
+            <span className="Countdown-col-element">
+              <strong>{addLeadingZeros(countDown.hours)}</strong>
+              <span>{"Hour"}</span>
+            </span>
           </span>
-        </span>
-        <span style={{ fontSize: "3rem" }}>:</span>
+          <span style={{ fontSize: "3rem" }}>:</span>
 
-        <span className="Countdown-col">
-          <span className="Countdown-col-element">
-            <strong>{addLeadingZeros(countDown.min)}</strong>
-            <span>{"Minute"}</span>
+          <span className="Countdown-col">
+            <span className="Countdown-col-element">
+              <strong>{addLeadingZeros(countDown.min)}</strong>
+              <span>{"Minute"}</span>
+            </span>
           </span>
-        </span>
 
-        <span style={{ fontSize: "3rem" }}>:</span>
-        <span className="Countdown-col">
-          <span className="Countdown-col-element">
-            <strong>{addLeadingZeros(countDown.sec)}</strong>
-            <span>{"Second"}</span>
+          <span style={{ fontSize: "3rem" }}>:</span>
+          <span className="Countdown-col">
+            <span className="Countdown-col-element">
+              <strong>{addLeadingZeros(countDown.sec)}</strong>
+              <span>{"Second"}</span>
+            </span>
           </span>
-        </span>
-        <strong style={{ fontSize: "3rem" }}>]</strong>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
