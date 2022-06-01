@@ -15,7 +15,7 @@ const NavItem = ({ text, icon, targetUrl, onClick, selected = false }: NavItemPr
     <Link to={`${targetUrl}`} onClick={onClick}>
       <li
         className={classNames(
-          "flex items-center gap-2 text-gray-400 p-2 pl-4 rounded-md hover:bg-slate-100 hover:text-gray-500 cursor-pointer transition-colors",
+          "flex items-center text-gray-400 p-2 pl-4 rounded-md hover:bg-slate-100 hover:text-gray-500 cursor-pointer transition-colors",
           {
             "bg-slate-200": selected,
             "text-gray-600": selected,
@@ -23,7 +23,7 @@ const NavItem = ({ text, icon, targetUrl, onClick, selected = false }: NavItemPr
         )}
       >
         <>{icon}</>
-        <p className="text-xl font-semibold">{text}</p>
+        <p className="pl-3 text-xl font-semibold">{text}</p>
       </li>
     </Link>
   );

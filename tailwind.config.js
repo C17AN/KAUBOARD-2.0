@@ -4,7 +4,12 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "kau-primary": "#312A7C",
+        "kau-secondary": "#0A9DCA"
+      }
+    },
   },
   plugins: [],
 }

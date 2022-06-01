@@ -1,12 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 type Props = {};
 
 const Community = (props: Props) => {
   return (
     <div>
-      <Link to="/">대시보드</Link>
+      <h2 className="text-4xl font-bold">커뮤니티</h2>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import NotificationItem from "./Item";
 
 const Notice = () => {
   useEffect(() => {
@@ -10,6 +11,7 @@ const Notice = () => {
         setIsLoading(false);
       });
   }, []);
+
   const [generalNotiList, setGeneralNotiList] = useState([]);
   const [schoolNotiList, setSchoolNotiList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,38 +29,32 @@ const Notice = () => {
   };
 
   return (
-    <div className="Notice">
-      <nav className="Notice__general">
-        <div style={{ fontSize: "1.2rem", fontWeight: 700 }}>
-          일반공지{"  "}
-          <span style={{ fontSize: "0.8rem", fontWeight: 400 }}>General Notice</span>
+    <div className="flex gap-8 bg-white py-4 px-6 rounded-md border-[1px] border-gray-200 border-solid shadow-sm">
+      <nav className="mb-2 flex-1">
+        <div className="mb-2">
+          <span className="mr-1 text-lg font-bold">일반공지</span>
+          <span className="text-sm text-gray-500">General Notice</span>
         </div>
-        <div className="Notice__border"></div>
-        <div className="Notice__container">
+        <ul className="flex flex-col gap-2">
           {isLoading
             ? "로딩 중..."
             : generalNotiList.map((item, idx) => (
-                <article key={idx} className={`article__${isNewItem(item)}`}>
-                  <a href={"https://www.kau.ac.kr/web/pages/gc32172b.do"}>{item}</a>
-                </article>
+                <NotificationItem key={idx} noticeType="GENERAL" title={item} />
               ))}
-        </div>
+        </ul>
       </nav>
-      <nav className="Notice__academy">
-        <div style={{ fontSize: "1.2rem", fontWeight: 700 }}>
-          학사공지{"  "}
-          <span style={{ fontSize: "0.8rem", fontWeight: 400 }}>Academic Notice</span>
+      <nav className="flex-1">
+        <div className="mb-2">
+          <span className="mr-1 text-lg font-bold">학사공지</span>
+          <span className="text-sm text-gray-500">Academic Notice</span>
         </div>
-        <div className="Notice__border"></div>
-        <div className="Notice__container">
+        <ul className="flex flex-col gap-2">
           {isLoading
             ? "로딩 중..."
             : schoolNotiList.map((item, idx) => (
-                <article key={idx} className={`article__${isNewItem(item)}`}>
-                  <a href={"https://www.kau.ac.kr/web/pages/gc14561b.do"}>{item}</a>
-                </article>
+                <NotificationItem key={idx} noticeType="SCHOOL" title={item} />
               ))}
-        </div>
+        </ul>
       </nav>
     </div>
   );

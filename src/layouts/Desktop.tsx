@@ -12,7 +12,7 @@ const DesktopLayout = ({ children }: DesktopLayoutProps) => {
   return (
     <div className="flex h-full">
       <Sidebar />
-      <div className="bg-slate-50 flex-1">{children}</div>
+      <div className="bg-slate-50 bg-opacity-80 flex-1 p-8">{children}</div>
     </div>
   );
 };

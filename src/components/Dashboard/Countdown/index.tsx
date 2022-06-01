@@ -1,4 +1,5 @@
 /*global chrome */
+import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import addLeadingZeros from "../../../utils/helpers/addLeadingZeros";
 // import "./CountDown.scss";
@@ -123,20 +124,22 @@ function CountDown() {
   const countDown = state;
 
   return (
-    <div className="Countdown">
-      {targetType ? (
-        <div className="Countdown__title" onClick={setSetterVisible}>
-          {targetType}까지 남은 시간 ⏱
-        </div>
-      ) : (
-        <div className="Countdown__title" onClick={setSetterVisible}>
-          종강 날짜 설정하기
-        </div>
-      )}
+    <div>
+      <section className="flex items-center mb-4">
+        <h2 className="text-xl font-bold mr-4">종강 타이머</h2>
+        <button
+          className="py-1 px-2 text-xs text-white hover:text-gray-600 hover:bg-slate-200 bg-kau-primary hover:bg-opacity-70 font-semibold transition-colors rounded-lg"
+          onClick={setSetterVisible}
+        >
+          타이머 설정
+        </button>
+      </section>
       {/* 디데이 직접 설정할 수 있는 세터 부분 */}
       <div
-        className="Countdown__setter"
-        style={{ visibility: isSetterVisible ? "visible" : "hidden" }}
+        className={classNames("bg-white", {
+          block: isSetterVisible,
+          hidden: !isSetterVisible,
+        })}
       >
         <input type="date" onChange={onTargetDateChange} />
         <div className="Countdown__setter__radio" onChange={onTargetTypeChange}>
@@ -174,7 +177,7 @@ function CountDown() {
         </div>
       </div>
       <section>
-        <div className="bg-slate-50 rounded-md flex justify-center p-4">
+        <div className="bg-white border-[1px] border-gray-200 border-solid rounded-md flex justify-center p-4 shadow-sm">
           <span className="Countdown-col">
             <span className="Countdown-col-element">
               <strong>{addLeadingZeros(countDown.days)}</strong>
