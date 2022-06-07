@@ -1,9 +1,10 @@
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 
 type ModalProps = {
   children: React.ReactNode;
+  handleClose?: () => void;
 };
 
 const ModalPortal = ({ children }) => {
@@ -15,7 +16,7 @@ const ModalPortal = ({ children }) => {
   }
 };
 
-const Modal = ({ children }: ModalProps) => {
+const Modal = ({ children, handleClose }: ModalProps) => {
   const initialModalAnimation = {
     y: -30,
     scale: 0.7,
@@ -28,8 +29,13 @@ const Modal = ({ children }: ModalProps) => {
 
   return (
     <ModalPortal>
-      <div className="fixed flex items-center justify-center top-0 left-0 w-full h-full bg-gray-600 bg-opacity-40">
-        <motion.div initial={initialModalAnimation} animate={activeModalAnimation}>
+      <div className="absolute flex items-center justify-center top-0 left-0 w-full h-full ">
+        <div
+          id="backdrop"
+          className="fixed top-0 left-0 w-[100vw] h-[100vh] bg-gray-800 bg-opacity-40 z-10"
+          onClick={handleClose}
+        />
+        <motion.div initial={initialModalAnimation} animate={activeModalAnimation} className="z-20">
           {children}
         </motion.div>
       </div>
