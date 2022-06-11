@@ -1,11 +1,12 @@
 import React, { ChangeEvent, useState } from "react";
 import CancelButton from "../common/Button/CancelButton";
 import ConfirmButton from "../common/Button/ConfirmButton";
+import imageCompression from "browser-image-compression";
+import Modal from "../common/Modal";
 import { stringify as uuidStringify } from "uuid";
 import { PhotographIcon, XIcon } from "@heroicons/react/outline";
 import { ListResult, ref, updateMetadata, uploadBytes, UploadMetadata } from "firebase/storage";
 import { storageService } from "../../firebase/Config";
-import Modal from "../common/Modal";
 import { useRecoilState } from "recoil";
 import { userEmailAtom } from "../../recoil/atom/authentication";
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from "react-query";
@@ -17,16 +18,23 @@ type PhotoUploadModalProps = {
   ) => Promise<QueryObserverResult<ListResult, unknown>>;
 };
 
+const compressOptions = {
+  maxSizeMB: 1,
+  maxWidthOrHeight: 500,
+  useWebWorker: true,
+};
+
 const PhotoUploadModal = ({ handleClose, refetch }: PhotoUploadModalProps) => {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [userEmail] = useRecoilState(userEmailAtom);
 
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       if (e.target.files) {
         const fileName = e.target.files[0];
-        const dataUrl = URL.createObjectURL(fileName);
+        const compressedFile = await imageCompression(fileName, compressOptions);
+        const dataUrl = URL.createObjectURL(compressedFile);
         setPhotoFile(fileName);
         setPhotoUrl(dataUrl);
       }

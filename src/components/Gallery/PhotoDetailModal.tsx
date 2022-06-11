@@ -9,8 +9,8 @@ type PhotoDetailModalProps = {
 const PhotoDetailModal = ({ imageUrl, handleClose }: PhotoDetailModalProps) => {
   return (
     <Modal handleClose={handleClose}>
-      <div className="w-[60vw] inline-block">
-        <img src={imageUrl} className="inline-block" alt="이미지" />
+      <div className="inline-block">
+        <img src={imageUrl} className="inline-block max-w-[60vw] max-h-[80vh]" alt="이미지" />
       </div>
     </Modal>
   );

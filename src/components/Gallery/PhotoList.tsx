@@ -12,7 +12,7 @@ import UploadRestrictionModal from "./UploadRestrictionModal";
 import getGalleryPhotoList from "../../apis/gallery";
 import { useQuery } from "react-query";
 
-const POSTS_PER_PAGE = 100;
+const POSTS_PER_PAGE = 50;
 
 type Photo = {
   imageUrl: string;
@@ -42,21 +42,13 @@ const PhotoList = () => {
       async onSuccess(data) {
         const photoList = await Promise.all(
           data.items.map((imageRef) => {
-            // getDownloadURL(imageRef).then((imageUrl) => {
-            //   newPhoto.imageUrl = imageUrl;
-            // });
-            // getMetadata(imageRef).then((metadata) => {
-            //   newPhoto.metaData = metadata;
-            // });
             return getPhotoData(imageRef);
           })
         );
-        console.log(photoList);
         setPhotoList(photoList);
       },
-      enabled: false,
+      // enabled: false,
       refetchOnWindowFocus: false,
-      // cacheTime: 0,
       staleTime: 5 * 1000 * 60,
     }
   );
@@ -73,16 +65,25 @@ const PhotoList = () => {
   return (
     <>
       <div className="flex justify-end mt-4 mb-6">
-        {isAuthenticated && (
-          <button
-            className="bg-kau-primary bg-opacity-60 text-gray-50 hover:text-gray-50 hover:bg-kau-primary hover:bg-opacity-80 transition-all font-semibold shadow py-2 px-4 rounded-md text-sm"
-            onClick={() => {
-              setIsUploadModalOpen(true);
-            }}
-          >
-            새 이미지 업로드
-          </button>
-        )}
+        <div className="flex w-full items-center justify-between">
+          <ul className="flex flex-col list-disc list-inside space-y-1">
+            <li className="text-xs text-gray-400">최근 업로드된 50장의 사진이 보여집니다.</li>
+            <li className="text-xs text-gray-400">
+              [화전 갤러리] 는 베타 중인 기능으로, 이후 업데이트에서 기능이 추가되거나 제거될 수
+              있습니다.
+            </li>
+          </ul>
+          {isAuthenticated && (
+            <button
+              className="bg-kau-primary bg-opacity-60 text-gray-50 hover:text-gray-50 hover:bg-kau-primary hover:bg-opacity-80 transition-all font-semibold shadow py-2 px-4 rounded-md text-sm"
+              onClick={() => {
+                setIsUploadModalOpen(true);
+              }}
+            >
+              새 이미지 업로드
+            </button>
+          )}
+        </div>
       </div>
       <div className="overflow-y-auto h-full pt-2">
         {isSuccess ? (
