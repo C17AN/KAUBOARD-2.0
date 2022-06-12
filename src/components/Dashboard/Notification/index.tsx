@@ -33,8 +33,8 @@ const Notice = () => {
           최근 업데이트 : {new Date(dataUpdatedAt).toLocaleTimeString()}
         </div>
       </div>
-      <div className="flex mb-2 space-x-8 bg-white/80 backdrop-blur-sm py-4 px-6 rounded-md border-[1px] border-gray-200 border-solid shadow-sm">
-        <nav className="flex-1">
+      <main className="flex mb-2 space-x-8 bg-white/80 backdrop-blur-sm py-4 px-6 rounded-md border-[1px] border-gray-200 border-solid shadow-sm">
+        <section className="flex-1">
           <div className="mb-2 pb-2 border-b-[1px] border-slate-200 border-solid">
             <span className="mr-1 text-lg font-bold text-gray-700">일반공지</span>
             <span className="text-sm text-gray-500">General Notice</span>
@@ -46,21 +46,21 @@ const Notice = () => {
                   <NotificationItem key={idx} noticeType="GENERAL" title={item} />
                 ))}
           </ul>
-        </nav>
-        <nav className="flex-1">
+        </section>
+        <section className="flex-1">
           <div className="mb-2 pb-2 border-b-[1px] border-slate-200 border-solid">
             <span className="mr-1 text-lg font-bold text-gray-700">학사공지</span>
             <span className="text-sm text-gray-500">Academic Notice</span>
           </div>
-          <ul className="flex flex-col gap-1">
+          <ul className="w-full flex flex-col gap-1 overflow-hidden">
             {isLoading
               ? "로딩 중..."
               : schoolNotiList.map((item, idx) => (
                   <NotificationItem key={idx} noticeType="SCHOOL" title={item} />
                 ))}
           </ul>
-        </nav>
-      </div>
+        </section>
+      </main>
     </>
   );
 };

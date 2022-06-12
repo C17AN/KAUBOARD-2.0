@@ -2,11 +2,12 @@ import classNames from "classnames";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import openGraphFetcher from "../../../apis/openGraph";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import useLocalStorageAsync from "../../../hooks/useLocalStorageAsync";
 import CancelButton from "../../common/Button/CancelButton";
 import ConfirmButton from "../../common/Button/ConfirmButton";
 import Input from "../../common/Input";
 import Modal from "../../common/Modal";
+import { v4 as uuidv4 } from "uuid";
 import { FavoriteLink } from "./List";
 
 type FavoriteLinkCreateModalProps = {
@@ -20,7 +21,7 @@ const FavoriteLinkCreateModal = ({
   favoriteLinkList,
   setFavoriteLinkList,
 }: FavoriteLinkCreateModalProps) => {
-  const [, setItem] = useLocalStorage();
+  const [, setItem] = useLocalStorageAsync();
   const [siteName, setSiteName] = useState("");
   const [siteUrl, setSiteUrl] = useState("");
   const [ogImage, setOgImage] = useState("");
@@ -46,24 +47,24 @@ const FavoriteLinkCreateModal = ({
   const handleSubmit = () => {
     setItem("favorites", [
       ...favoriteLinkList,
-      { title: siteName, thumbnail: ogImage, targetUrl: siteUrl },
+      { id: uuidv4(), title: siteName, thumbnail: ogImage, targetUrl: siteUrl },
     ]);
     setFavoriteLinkList([
       ...favoriteLinkList,
-      { title: siteName, thumbnail: ogImage, targetUrl: siteUrl },
+      { id: uuidv4(), title: siteName, thumbnail: ogImage, targetUrl: siteUrl },
     ]);
     handleClose();
   };
 
   const validateForm = () => {
-    if (isSuccess && siteName.length > 0) {
+    if (siteName.length > 0 && siteUrl.length > 0) {
       setIsFormValid(true);
     } else {
       setIsFormValid(false);
     }
   };
 
-  useEffect(validateForm, [isSuccess, siteName]);
+  useEffect(validateForm, [siteUrl, siteName]);
 
   return (
     <Modal>
@@ -92,7 +93,9 @@ const FavoriteLinkCreateModal = ({
                 }}
                 placeholder="사이트 URL을 입력하세요"
               />
-              {!isSuccess ? (
+              {/* 
+                오픈 그래프 불러오는 코드 -> 사용자 입장에서는 불편할 수 있을거같아 제거
+                {!isSuccess ? (
                 <button
                   className={classNames(
                     "inline-block my-2 bg-kau-primary/50 rounded-lg text-gray-50 hover:bg-kau-primary/70 transition-colors py-2 px-4 font-semibold",
@@ -104,7 +107,7 @@ const FavoriteLinkCreateModal = ({
                 </button>
               ) : (
                 <img src="/icons/complete.gif" className="w-10 h-10" />
-              )}
+              )} */}
             </div>
           </div>
         </section>

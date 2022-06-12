@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { ClipboardCheckIcon, ViewGridAddIcon } from "@heroicons/react/outline";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import useLocalStorageAsync from "../../../hooks/useLocalStorageAsync";
 import FavoriteLinkItem from "./Item";
 import FavoriteLinkCreateModal from "./FavoriteLinkCreateModal";
 import { v4 as uuidv4 } from "uuid";
 
 export type FavoriteLink = {
+  id: string;
   title: string;
   thumbnail: string;
   targetUrl: string;
 };
 
 const FavoriteLinkList = () => {
-  const [getItem, setItem] = useLocalStorage();
+  const [getItem, setItem] = useLocalStorageAsync();
   const [favoriteLinkList, setFavoriteLinkList] = useState<FavoriteLink[]>([]);
   const [isFavoriteLinkCreateModalOpen, setIsFavoriteLinkCreateModalOpen] = useState(false);
 
-  useEffect(() => {
-    const _favoriteLinkList = getItem("favorites");
+  const getFavoriteLinkList = async () => {
+    const _favoriteLinkList = (await getItem("favorites")) ?? [];
     setFavoriteLinkList(_favoriteLinkList);
+  };
+
+  useEffect(() => {
+    getFavoriteLinkList();
   }, []);
 
   return (
@@ -43,7 +48,7 @@ const FavoriteLinkList = () => {
             })}
           </ul>
         ) : (
-          <div className="flex-1 text-center py-4 font-semibold text-gray-500 text-lg">
+          <div className="flex-1 text-center py-4 font-semibold text-gray-400 text-lg">
             저장된 즐겨찾기가 없습니다.
           </div>
         )}
