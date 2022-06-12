@@ -1,87 +1,96 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import {
-  push,
-  ref,
-  limitToLast,
-  onValue,
-  orderByChild,
-  query,
-  remove,
-  get,
-} from "@firebase/database";
+import React, { useEffect, useRef, useState } from "react";
+
 import MessageType from "../../../types/Message";
 import Message from "./Message";
 import { v4 as uuidv4 } from "uuid";
 import { PaperAirplaneIcon } from "@heroicons/react/outline";
-import { realtimeDbService } from "../../../firebase/Config";
 import { useRecoilState } from "recoil";
-import { isAuthenticatedAtom } from "../../../recoil/atom/authentication";
+import { isAuthenticatedAtom, userEmailAtom } from "../../../recoil/atom/authentication";
 import ChattingRestrictionModal from "./ChattingRestrictionModal";
+import { deleteMessage, listenMessageUpdate, postMessage } from "../../../apis/chatting";
+import { userNameAtom } from "../../../recoil/atom/application";
 
 type ChattingProps = {
   channelType: string;
 };
 
 const Chatting = ({ channelType }: ChattingProps) => {
-  const location = ref(realtimeDbService, `chatting`);
   const [isChattingRestrictionModal, setIsChattingRestrictionModal] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useRecoilState<boolean>(isAuthenticatedAtom);
+  const [isAuthenticated] = useRecoilState<boolean>(isAuthenticatedAtom);
+  const [userEmail] = useRecoilState(userEmailAtom);
+  const [userName] = useRecoilState(userNameAtom);
+  const [content, setContent] = useState<null | string>(null);
+  const [message, setMessage] = useState<Omit<MessageType, "createdAt" | "uid"> | null>(null);
+  const [messageList, setMessageList] = useState<null | MessageType[]>(null);
+  const chattingRef = useRef<any>();
 
   useEffect(() => {
-    // 데이터베이스 subscribe 코드
-    onValue(chatRef, (res) => {
-      const _messageList = Object.values(res.val()) as MessageType[];
-      setMessageList(_messageList);
-    });
-    return () => {};
+    deleteMessage();
+    return listenMessageUpdate(setMessageList);
   }, []);
 
-  const chatRef = query(
-    ref(realtimeDbService, `chatting`),
-    orderByChild("createdAt"),
-    limitToLast(100)
-  );
-  const [message, setMessage] = useState<null | string>(null);
-  const [messageList, setMessageList] = useState<null | MessageType[]>(null);
+  useEffect(() => {
+    const newMessage = {
+      content,
+      senderEmail: userEmail,
+      senderName: userName,
+      type: "MESSAGE",
+    };
+    setMessage(newMessage as any);
+  }, [content]);
 
-  const sendMessage = () => {
-    push(location, {
-      uid: uuidv4(),
-      name: "찬민",
-      message,
-      createdAt: new Date().toLocaleString(),
-    });
-    // receiveMessage();
-  };
+  useEffect(() => {
+    if (messageList) {
+      scrollToBottom();
+    }
+  }, [messageList]);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value);
+  const scrollToBottom = () => {
+    if (chattingRef !== null) {
+      chattingRef.current.scrollTop = chattingRef.current.scrollHeight;
+    }
   };
 
   return (
     <>
-      <div className="flex flex-col bg-white/80 rounded-lg shadow p-8 h-full border border-gray-200 border-solid">
+      <div className="flex flex-col flex-1 bg-white/80 rounded-lg shadow p-6 h-full border border-gray-200 border-solid overflow-hidden">
         {messageList !== null && (
-          <ul className="flex-1 inline-flex flex-col gap-5 overflow-y-scroll mb-8">
-            {messageList?.map((message) => (
-              <Message key={message.uid} {...message} />
-            ))}
+          <ul
+            ref={chattingRef}
+            className="flex-1 inline-flex flex-col gap-5 overflow-y-scroll mb-8"
+          >
+            {messageList?.map((message) => {
+              return <Message key={message.uid} {...message} />;
+            })}
           </ul>
         )}
         <div className="mt-auto flex items-center space-x-4">
           <input
             type="text"
+            value={content ?? ""}
             placeholder="텍스트를 입력하세요"
             className="bg-slate-100 flex-1 rounded-lg py-2 px-4 text-sm text-gray-500 focus:outline-none focus:bg-gray-200 transition-colors placeholder:text-gray-400"
-            onChange={handleInputChange}
+            onChange={(e) => setContent(e.target.value)}
             autoCorrect={"off"}
             autoComplete="off"
             spellCheck={false}
+            maxLength={75}
+            onKeyUp={(e) => {
+              if (e.key === "Enter" && message !== null) {
+                postMessage(message);
+                setContent(null);
+              }
+            }}
           />
           <button
             type="button"
             className="flex items-center justify-center bg-kau-primary bg-opacity-70 hover:bg-opacity-100 transition-all p-2 text-white rounded-full"
-            onClick={sendMessage}
+            onClick={() => {
+              if (message !== null) {
+                postMessage(message);
+                setContent(null);
+              }
+            }}
           >
             <PaperAirplaneIcon className="w-4 h-4" />
           </button>
