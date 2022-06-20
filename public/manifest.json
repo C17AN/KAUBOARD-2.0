@@ -1,25 +1,27 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "manifest_version": 3,
+  "version": "2.0.0",
+  "short_name": "항공대 종강시계",
+  "name": "한국항공대 종강시계",
+  "description": "한국항공대 학생들을 위한 종강시계 어플리케이션",
+  "icons": {
+    "192": "logo192.png",
+    "512": "logo512.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self';"
+  },
+  "permissions": ["storage", "identity"],
+  "optional_permissions": ["unlimitedStorage"],
+  "host_permissions": ["https://calm-mesa-43659.herokuapp.com/*"],
+  "chrome_url_overrides": {
+    "newtab": "/index.html"
+  },
+  "oauth2": {
+    "client_id": "306030977464-3d2gkgeeckghkcifj147q8uhg4rvvs1i.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  }
 }
