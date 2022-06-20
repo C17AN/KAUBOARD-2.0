@@ -9,8 +9,8 @@ import MessageType from "../../types/Message";
 export const deleteMessage = async () => {
   const chattingListRef = query(ref(realtimeDbService, "chatting"), orderByChild("createdAt"));
   onValue(chattingListRef, (res) => {
-    const chattingRefList = Object.entries(res.val());
-    chattingRefList.forEach((chattingRef) => {
+    const chattingRefList = Object.entries(res?.val() ?? {});
+    chattingRefList?.forEach((chattingRef) => {
       const [key, message] = chattingRef as [key: string, message: MessageType];
       if (new Date(message.createdAt!).getTime() + 1000 * 60 * 60 * 24 < new Date().getTime()) {
         remove(ref(realtimeDbService, `chatting/${key}`));
@@ -28,7 +28,7 @@ export const listenMessageUpdate = (
     limitToLast(100)
   );
   onValue(chatRef, (res) => {
-    const _messageList = Object.values(res.val()) as MessageType[];
+    const _messageList = Object.values(res?.val() ?? {}) as MessageType[];
     updateMessageList(_messageList);
   });
 };
