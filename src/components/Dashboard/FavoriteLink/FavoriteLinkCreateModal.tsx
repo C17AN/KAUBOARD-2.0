@@ -1,12 +1,12 @@
-import classNames from "classnames";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import openGraphFetcher from "../../../apis/openGraph";
+// import openGraphFetcher from "../../../apis/openGraph";
 import useLocalStorageAsync from "../../../hooks/useLocalStorageAsync";
 import CancelButton from "../../common/Button/CancelButton";
 import ConfirmButton from "../../common/Button/ConfirmButton";
 import Input from "../../common/Input";
 import Modal from "../../common/Modal";
+import classNames from "classnames";
+import { useQuery } from "react-query";
 import { v4 as uuidv4 } from "uuid";
 import { FavoriteLink } from "./List";
 
@@ -28,24 +28,24 @@ const FavoriteLinkCreateModal = ({
   const [isFormValid, setIsFormValid] = useState(false);
 
   // fetcher 함수에는 첫 번째 인자의 값(쿼리 키, 인자 등)이 전달된다.
-  const { isSuccess, isLoading, refetch } = useQuery(["openGraphData", siteUrl], openGraphFetcher, {
-    enabled: false,
-    refetchOnWindowFocus: false,
-  });
+  // const { isSuccess, isLoading, refetch } = useQuery(["openGraphData", siteUrl], openGraphFetcher, {
+  //   enabled: false,
+  //   refetchOnWindowFocus: false,
+  // });
 
-  const handleUrlValidation = async () => {
-    const { data } = await refetch();
-    const imageResource = data?.data.ogImage;
-    // ogImage가 둘 이상인 사이트가 일부 존재함. (Ex. https://m.inven.co.kr)
-    if (Array.isArray(imageResource)) {
-      setOgImage(imageResource[imageResource.length].url);
-    } else {
-      setOgImage(imageResource.url);
-    }
-  };
+  // const handleUrlValidation = async () => {
+  //   const { data } = await refetch();
+  //   const imageResource = data?.data.ogImage;
+  //   // ogImage가 둘 이상인 사이트가 일부 존재함. (Ex. https://m.inven.co.kr)
+  //   if (Array.isArray(imageResource)) {
+  //     setOgImage(imageResource[imageResource.length].url);
+  //   } else {
+  //     setOgImage(imageResource.url);
+  //   }
+  // };
 
-  const handleSubmit = () => {
-    setItem("favorites", [
+  const handleSubmit = async () => {
+    await setItem("favorites", [
       ...favoriteLinkList,
       { id: uuidv4(), title: siteName, thumbnail: ogImage, targetUrl: siteUrl },
     ]);

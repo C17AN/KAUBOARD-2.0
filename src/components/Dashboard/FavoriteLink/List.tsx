@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { ClipboardCheckIcon, ViewGridAddIcon } from "@heroicons/react/outline";
 import useLocalStorageAsync from "../../../hooks/useLocalStorageAsync";
 import FavoriteLinkItem from "./Item";
 import FavoriteLinkCreateModal from "./FavoriteLinkCreateModal";
+import { ClipboardCheckIcon, ViewGridAddIcon } from "@heroicons/react/outline";
 import { v4 as uuidv4 } from "uuid";
 
 export type FavoriteLink = {
@@ -18,8 +18,12 @@ const FavoriteLinkList = () => {
   const [isFavoriteLinkCreateModalOpen, setIsFavoriteLinkCreateModalOpen] = useState(false);
 
   const getFavoriteLinkList = async () => {
-    const _favoriteLinkList = (await getItem("favorites")) ?? [];
-    setFavoriteLinkList(_favoriteLinkList);
+    try {
+      const _favoriteLinkList = (await getItem("favorites")) ?? [];
+      setFavoriteLinkList(_favoriteLinkList);
+    } catch (err) {
+      setFavoriteLinkList([]);
+    }
   };
 
   useEffect(() => {
@@ -44,7 +48,13 @@ const FavoriteLinkList = () => {
         {favoriteLinkList.length > 0 ? (
           <ul className="w-full h-full grid grid-cols-8 gap-4 overflow-hidden">
             {favoriteLinkList?.map((favoriteLink) => {
-              return <FavoriteLinkItem key={uuidv4()} {...favoriteLink} />;
+              return (
+                <FavoriteLinkItem
+                  key={favoriteLink.id}
+                  setFavoriteLinkList={setFavoriteLinkList}
+                  {...favoriteLink}
+                />
+              );
             })}
           </ul>
         ) : (
