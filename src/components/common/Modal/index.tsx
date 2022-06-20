@@ -35,7 +35,11 @@ const Modal = ({ children, handleClose }: ModalProps) => {
           className="fixed top-0 left-0 w-[100vw] h-[100vh] bg-gray-800 bg-opacity-40 z-10"
           onClick={handleClose}
         />
-        <motion.div initial={initialModalAnimation} animate={activeModalAnimation} className="z-20">
+        <motion.div
+          initial={initialModalAnimation}
+          animate={activeModalAnimation}
+          className="z-20 inline"
+        >
           {children}
         </motion.div>
       </div>
