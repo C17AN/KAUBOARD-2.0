@@ -4,26 +4,30 @@ import {
   CameraIcon,
   ChatAltIcon,
   DesktopComputerIcon,
+  PresentationChartBarIcon,
   TemplateIcon,
 } from "@heroicons/react/outline";
-import Profile from "./Profile";
-
-type SidebarProps = {};
+import Weather from "./Weather";
+import BugReport from "./BugReport/BugReport";
+import SchoolPortal from "./SchoolPortal";
+import { useRecoilState } from "recoil";
+import { sidebarIndexAtom } from "../../../recoil/atom/application";
 
 const FIRST_NAV_ITEM = 0;
 
-const Sidebar = ({}: SidebarProps) => {
-  const [selectedIndex, setSelectedIndex] = useState(FIRST_NAV_ITEM);
+const Sidebar = () => {
+  const [selectedIndex, setSelectedIndex] = useRecoilState(sidebarIndexAtom);
 
   return (
-    <aside className="flex flex-col w-64 border-r-[1px] border-r-slate-300 border-solid p-8 dark:bg-black">
-      <Profile />
-      <div className="h-8" />
+    <aside className="flex flex-col w-64 border-r-[1px] border-r-slate-300 border-solid px-8 pt-6 pb-8 dark:bg-black">
+      <Weather />
+      <div className="my-4 mx-[-4px] border-t-[2px] border-kau-primary border-opacity-40 border-solid" />
       <ul className="flex flex-col gap-4 flex-1">
-        {NavItemList.map((navItem, index) => {
+        {navItemList.map((navItem, index) => {
           const { text, icon, targetUrl } = navItem;
           return (
             <NavItem
+              key={text}
               text={text}
               icon={icon}
               targetUrl={targetUrl}
@@ -33,19 +37,22 @@ const Sidebar = ({}: SidebarProps) => {
           );
         })}
       </ul>
-      <button>버그 제보 & 건의하기</button>
+      <div className="space-y-4">
+        <SchoolPortal />
+        <BugReport />
+      </div>
     </aside>
   );
 };
 
-const NavItemList = [
+const navItemList = [
   {
     text: "대시보드",
     icon: <TemplateIcon className="w-5 h-5" />,
     targetUrl: "/",
   },
   {
-    text: "정보",
+    text: "유틸리티",
     icon: <DesktopComputerIcon className="w-5 h-5" />,
     targetUrl: "/info",
   },
@@ -58,6 +65,11 @@ const NavItemList = [
     text: "커뮤니티",
     icon: <ChatAltIcon className="w-5 h-5" />,
     targetUrl: "/community",
+  },
+  {
+    text: "설정",
+    icon: <PresentationChartBarIcon className="w-5 h-5" />,
+    targetUrl: "/setting",
   },
 ];
 
