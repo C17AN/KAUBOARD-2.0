@@ -1,6 +1,6 @@
 import { ExclamationCircleIcon, ExclamationIcon } from "@heroicons/react/outline";
 import React, { Dispatch, SetStateAction } from "react";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import useLocalStorageAsync from "../../../hooks/useLocalStorageAsync";
 import CancelButton from "../../common/Button/CancelButton";
 import ConfirmButton from "../../common/Button/ConfirmButton";
 import Modal from "../../common/Modal";
@@ -8,22 +8,22 @@ import { Memo } from "./List";
 
 type MemoDeleteModalProps = {
   selectedMemoId: string;
-  onClose: () => void;
+  handleClose: () => void;
   setMemoList: Dispatch<SetStateAction<Memo[]>>;
 };
 
-const MemoDeleteModal = ({ selectedMemoId, onClose, setMemoList }: MemoDeleteModalProps) => {
-  const [getItems, setItems] = useLocalStorage();
+const MemoDeleteModal = ({ selectedMemoId, handleClose, setMemoList }: MemoDeleteModalProps) => {
+  const [getItem, setItem] = useLocalStorageAsync();
 
-  const deleteMemo = (selectedMemoId) => {
-    const _memoList = getItems("memos");
-    const filteredMemoList = _memoList.filter((memo) => {
+  const deleteMemo = async (selectedMemoId: string) => {
+    const _memoList: Memo[] = (await getItem("memos")) ?? [];
+    const filteredMemoList = _memoList?.filter((memo) => {
       const { id } = memo;
       return id !== selectedMemoId;
     });
     setMemoList(filteredMemoList);
-    setItems("memos", filteredMemoList);
-    onClose();
+    setItem("memos", filteredMemoList);
+    handleClose();
   };
 
   return (
@@ -39,7 +39,7 @@ const MemoDeleteModal = ({ selectedMemoId, onClose, setMemoList }: MemoDeleteMod
           </div>
         </section>
         <div className="mt-auto text-right space-x-4">
-          <CancelButton text="취소" handleClick={onClose} />
+          <CancelButton text="취소" handleClick={handleClose} />
           <ConfirmButton text="확인" handleClick={() => deleteMemo(selectedMemoId)} />
         </div>
       </div>

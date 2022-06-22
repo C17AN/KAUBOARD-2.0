@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import MemoDeleteModal from "./MemoDeleteModal";
+import styled from "@emotion/styled";
 import { XIcon } from "@heroicons/react/outline";
 import { Memo } from "./List";
-import styled from "@emotion/styled";
 
 type MemoItemProps = {
   handleClick: () => void;
@@ -37,7 +37,7 @@ const MemoItem = ({ handleClick, setMemoList, id, title, content, createdAt }: M
         <MemoDeleteModal
           selectedMemoId={id}
           setMemoList={setMemoList}
-          onClose={() => {
+          handleClose={() => {
             setIsMemoDeleteModalOpen(false);
           }}
         />

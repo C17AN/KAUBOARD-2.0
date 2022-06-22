@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { DocumentTextIcon, PencilAltIcon } from "@heroicons/react/outline";
 import MemoUploadModal from "./MemoUploadModal";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import useLocalStorageAsync from "../../../hooks/useLocalStorageAsync";
 import MemoItem from "./Item";
 import styled from "@emotion/styled";
+import openToast from "../../../utils/helpers/openToast";
+import isEmpty from "../../../utils/helpers/isEmpty";
 
 export type Memo = {
   id: string;
@@ -19,11 +21,20 @@ const MemoList = () => {
   const [isMemoDetailModalOpen, setIsMemoDetailModalOpen] = useState(false);
   const [selectedMemo, setSelectedMemo] = useState<Memo | null>(null);
   const [memoList, setMemoList] = useState<Memo[]>([]);
-  const [getItem, setItem] = useLocalStorage();
+  const [getItem] = useLocalStorageAsync();
+
+  const getInitialMemoData = async () => {
+    try {
+      const _memoList = (await getItem("memos")) ?? [];
+      const memoList = isEmpty(_memoList) ? [] : [..._memoList];
+      setMemoList(memoList);
+    } catch (err) {
+      setMemoList([]);
+    }
+  };
 
   useEffect(() => {
-    const _memoList = getItem("memos") || [];
-    setMemoList(_memoList);
+    getInitialMemoData();
   }, []);
 
   return (
@@ -35,7 +46,7 @@ const MemoList = () => {
         </h2>
       </div>
       <div className="flex flex-col bg-white/90 h-full border border-solid border-gray-200 rounded-lg p-4 shadow">
-        {memoList.length > 0 ? (
+        {Array.isArray(memoList) && memoList?.length > 0 ? (
           <StyledMemoList className="flex flex-col flex-1 overflow-y-auto gap-4 mb-4 pr-2 ">
             {memoList?.map((memo) => {
               const { id, title, content, createdAt } = memo;
@@ -49,7 +60,6 @@ const MemoList = () => {
                   createdAt={createdAt}
                   handleClick={() => {
                     setSelectedMemo(memo);
-                    console.log(memo);
                     setIsMemoDetailModalOpen(true);
                   }}
                 />
@@ -58,7 +68,7 @@ const MemoList = () => {
           </StyledMemoList>
         ) : (
           <div className="flex-1 flex justify-center items-center text-gray-400 font-semibold text-xl">
-            메모가 없습니다.
+            저장된 메모가 없습니다.
           </div>
         )}
         <div className="self-end font-semibold">
@@ -68,7 +78,11 @@ const MemoList = () => {
           <button
             className="p-1 w-12 h-12 inline-block rounded-full text-white bg-kau-primary/60 hover:bg-kau-primary/80 transition-colors"
             onClick={() => {
-              setIsMemoUploadModalOpen(true);
+              if (memoList?.length < MAX_MEMO_COUNT) {
+                setIsMemoUploadModalOpen(true);
+              } else {
+                openToast("최대 메모 개수를 초과했습니다.", "error");
+              }
             }}
           >
             <PencilAltIcon className="inline-block w-6 h-6 font-bold" />
@@ -87,8 +101,7 @@ const MemoList = () => {
       {isMemoDetailModalOpen && (
         <MemoUploadModal
           setMemoList={setMemoList}
-          presetMemoTitle={selectedMemo?.title}
-          presetMemoContent={selectedMemo?.content}
+          selectedMemo={selectedMemo!}
           handleClose={() => {
             setIsMemoDetailModalOpen(false);
           }}
