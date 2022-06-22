@@ -11,7 +11,7 @@ const Notice = () => {
     // onSuccess는 실제 쿼리를 수행했을 때에만 실행되므로, 여기에 setState 로직을 사용하면 안된다.
     // },
     // cacheTime: 2 * 60 * 1000,
-    staleTime: 2 * 60 * 1000,
+    // staleTime: 2 * 60 * 1000,
   });
 
   useEffect(() => {

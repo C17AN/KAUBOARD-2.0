@@ -22,6 +22,7 @@ function CountDown() {
 
   const getInitialTimeData = async () => {
     const _targetDateTimestamp = await getItem("targetDate");
+    console.log(_targetDateTimestamp);
     const _targetType = await getItem("targetType");
     setTargetDate(_targetDateTimestamp);
     setTargetType(_targetType);
@@ -107,27 +108,29 @@ function CountDown() {
         </button>
       </section>
       {/* 디데이 직접 설정할 수 있는 세터 부분 */}
-      <section className="flex flex-1 justify-center items-center space-x-5 bg-white border-[1px] border-gray-200 border-solid text-gray-500 font-semibold rounded-md p-4 shadow-sm">
-        <div className="flex flex-col items-center w-[3rem]">
-          <p className="text-5xl text-gray-600 mb-[2px]">{addLeadingZeros(timeLeft.days)}</p>
-          <span className="text-xs text-gray-500">{timeLeft.days > 1 ? "Days" : "Day"}</span>
-        </div>
-        <span className="text-3xl">:</span>
-        <div className="flex flex-col items-center w-[3rem]">
-          <p className="text-5xl text-gray-600 mb-[2px]">{addLeadingZeros(timeLeft.hours)}</p>
-          <span className="text-xs text-gray-500">{timeLeft.hours > 1 ? "Hours" : "Hour"}</span>
-        </div>
-        <span className="text-3xl">:</span>
-        <div className="flex flex-col items-center w-[3rem]">
-          <p className="text-5xl text-gray-600 mb-[2px]">{addLeadingZeros(timeLeft.min)}</p>
-          <span className="text-xs text-gray-500">{timeLeft.min > 1 ? "Minutes" : "Minute"}</span>
-        </div>
-        <span className="text-3xl">:</span>
-        <div className="flex flex-col items-center w-[3rem]">
-          <p className="text-5xl text-gray-600 mb-[2px]">{addLeadingZeros(timeLeft.sec)}</p>
-          <span className="text-xs text-gray-500">{timeLeft.sec > 1 ? "Seconds" : "Second"}</span>
-        </div>
-      </section>
+      <div className="bg-kau-primary/10 p-2 flex-1 rounded-lg">
+        <section className="flex flex-1 h-full justify-center items-center space-x-5 bg-white border-[1px] border-gray-200 border-solid text-gray-500 font-semibold rounded-md p-4 shadow-sm">
+          <div className="flex flex-col items-center w-[3rem]">
+            <p className="text-5xl text-gray-600 mb-[2px]">{addLeadingZeros(timeLeft.days)}</p>
+            <span className="text-xs text-gray-500">{timeLeft.days > 1 ? "Days" : "Day"}</span>
+          </div>
+          <span className="text-3xl">:</span>
+          <div className="flex flex-col items-center w-[3rem]">
+            <p className="text-5xl text-gray-600 mb-[2px]">{addLeadingZeros(timeLeft.hours)}</p>
+            <span className="text-xs text-gray-500">{timeLeft.hours > 1 ? "Hours" : "Hour"}</span>
+          </div>
+          <span className="text-3xl">:</span>
+          <div className="flex flex-col items-center w-[3rem]">
+            <p className="text-5xl text-gray-600 mb-[2px]">{addLeadingZeros(timeLeft.min)}</p>
+            <span className="text-xs text-gray-500">{timeLeft.min > 1 ? "Minutes" : "Minute"}</span>
+          </div>
+          <span className="text-3xl">:</span>
+          <div className="flex flex-col items-center w-[3rem]">
+            <p className="text-5xl text-gray-600 mb-[2px]">{addLeadingZeros(timeLeft.sec)}</p>
+            <span className="text-xs text-gray-500">{timeLeft.sec > 1 ? "Seconds" : "Second"}</span>
+          </div>
+        </section>
+      </div>
       {isDdayModalVisible && (
         <DdaySettingModal
           targetDate={targetDate!}
