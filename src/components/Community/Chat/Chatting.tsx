@@ -2,11 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 
 import MessageType from "../../../types/Message";
 import Message from "./Message";
-import { v4 as uuidv4 } from "uuid";
+import ChattingRestrictionModal from "./ChattingRestrictionModal";
 import { PaperAirplaneIcon } from "@heroicons/react/outline";
 import { useRecoilState } from "recoil";
 import { isAuthenticatedAtom, userEmailAtom } from "../../../recoil/atom/authentication";
-import ChattingRestrictionModal from "./ChattingRestrictionModal";
 import { deleteMessage, listenMessageUpdate, postMessage } from "../../../apis/chatting";
 import { userNameAtom } from "../../../recoil/atom/application";
 
@@ -76,7 +75,7 @@ const Chatting = ({ channelType }: ChattingProps) => {
             spellCheck={false}
             maxLength={75}
             onKeyUp={(e) => {
-              if (e.key === "Enter" && message !== null) {
+              if (e.key === "Enter" && message !== null && userEmail && userName) {
                 postMessage(message);
                 setContent(null);
               }

@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import { HeartIcon } from "@heroicons/react/outline";
 import { motion } from "framer-motion";
 import PhotoDetailModal from "./PhotoDetailModal";
+import { Photo } from "../../types/Photo";
 
 type PhotoItemProps = {
   index: number;
-  author: string;
-  imageUrl: string;
-  description: string;
-};
-
-const initialAnimation = {};
+} & Photo;
 
 const animationVariant = {
   hidden: {
@@ -27,7 +23,7 @@ const animationVariant = {
   },
 };
 
-const PhotoItem = ({ index, author, imageUrl, description }: PhotoItemProps) => {
+const PhotoItem = ({ index, uploaderName, photoUrl, description, createdAt }: PhotoItemProps) => {
   const [isPhotoDetailModalOpen, setIsPhotoDetailModalOpen] = useState(false);
   return (
     <>
@@ -40,15 +36,17 @@ const PhotoItem = ({ index, author, imageUrl, description }: PhotoItemProps) => 
         variants={animationVariant}
         onClick={() => setIsPhotoDetailModalOpen(true)}
       >
-        {/* <p className="py-4 px-4 font-semibold text-gray-600">{author}</p> */}
-        <img src={imageUrl} alt={description} />
+        <img src={photoUrl} alt={description} />
         {/* <section className="my-3 px-3">
         <HeartIcon className="h-5 w-5 text-gray-500 cursor-pointer hover:text-pink-300 transition-colors" />
       </section> */}
       </motion.div>
       {isPhotoDetailModalOpen && (
         <PhotoDetailModal
-          imageUrl={imageUrl}
+          photoUrl={photoUrl}
+          uploaderName={uploaderName}
+          description={description}
+          createdAt={createdAt}
           handleClose={() => setIsPhotoDetailModalOpen(false)}
         />
       )}
